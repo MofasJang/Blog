@@ -10,4 +10,4 @@ categories:
 ---
 # 软件工程专业计算机组成课程笔记
 <!-- more -->
-<iframe src="http://qh04sczlg.hd-bkt.clouddn.com/%E8%AE%A1%E7%BB%84.pdf" width="100%" height="1000px"></iframe>
+<iframe src="http://file.panjiangtao.cn/%E8%AE%A1%E7%BB%84.pdf" width="100%" height="1000px"></iframe>

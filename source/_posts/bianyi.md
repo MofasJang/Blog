@@ -10,4 +10,4 @@ categories:
 ---
 # 软件工程专业编译原理课程笔记
 <!-- more -->
-<iframe src="http://qh04sczlg.hd-bkt.clouddn.com/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86.pdf" width="100%" height="1000px"></iframe>
+<iframe src="http://file.panjiangtao.cn/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86.pdf" width="100%" height="1000px"></iframe>

@@ -1,0 +1,96 @@
+*{margin:0;padding:0;list-style-type:none;}
+
+body {
+  background:url("http://file.panjiangtao.cn/bg4.jpg");
+  background-repeat: no-repeat;
+  background-attachment:fixed;
+  background-size: cover;
+  height: 100vh;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: -2;
+}
+.nexmoe-bg {
+  opacity: 1;
+  background-size: cover;
+  position: fixed;
+  filter: blur(30px);
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+.title {
+  font-size: 60px;
+  letter-spacing: 2px;
+  text-align: center;
+  color: black;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgb(102, 96, 96);
+  margin: 25px;
+  position: relative;
+  width: 100%;
+}
+.gallery {
+  display: flex;
+  padding-bottom: 40px;
+  margin: auto auto;
+  width: 90%;
+  transition: .3s;
+}
+.gallery:hover .gallery__image {
+  filter: grayscale(1);
+}
+.gallery__column {
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+}
+.gallery__link {
+  margin: 10px 2px;
+  
+  border-radius: 10px;
+}
+.gallery__link:hover{
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+  transition: .5s;
+  z-index: 100;
+}
+.gallery__link:hover .gallery__image {
+  filter: grayscale(0);
+  transform: scale(1.2);
+}
+.gallery__link:active .gallery__image {
+  transform: scale(2);
+}
+.gallery__link:hover .gallery__caption {
+  opacity: 1;
+}
+.gallery__link:active .gallery__caption {
+  opacity: 0;
+}
+.gallery__thumb {
+  position: relative;
+}
+.gallery__image {
+  display: block;
+  margin: auto auto;
+  border-radius: 10px;
+  width: 90%;
+  transition: .3s;
+}
+.gallery__caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 2px 10px 0px;
+  width: 100%;
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+  color: white;
+  opacity: 0;
+  /* background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, rgba(255, 255, 255, 0) 100%); */
+  transition: .3s;
+}

@@ -30,7 +30,7 @@ search:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
-url: http://blog.panjiangtao.cn
+url: http://www.panjiangtao.cn
 root: /
 permalink: posts/:title/
 permalink_defaults:
@@ -40,7 +40,7 @@ pretty_urls:
 
 baidu_url_submit:
   count: 100 # 提交最新的一个链接
-  host: blog.panjiangtao.cn # 在百度站长平台中注册的域名
+  host: www.panjiangtao.cn # 在百度站长平台中注册的域名
   token: MSQCiKXQdzgMaU1c # 请注意这是您的秘钥， 所以请不要把博客源代码发布在公众仓库里!
   path: baidu_urls.txt # 文本文档的地址， 新链接会保存在此文本文档里
 
@@ -53,7 +53,7 @@ category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
-  - "wallpaper/**"
+  - "photos/**"
 
 symbols_count_time:
   # 文章上部是否显示字数
@@ -143,6 +143,9 @@ theme: next
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
 - type: git
-  repo: https://github.com/MofasJang/MofasJang.github.io
+  repo: git@150.158.212.116:/home/git/hexo.git
   branch: master
+# - type: git
+#   repo: https://github.com/MofasJang/MofasJang.github.io
+#   branch: master 
 - type: baidu_url_submitter

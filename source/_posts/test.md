@@ -6,8 +6,24 @@ tags:
 categories:
 - 测试
 ---
+## tab选项卡
+{% tabs tab,2 %}
+<!-- tab -->
+this is tab1
+<!-- endtab -->
+<!-- tab -->
+this is tab2
+<!-- endtab -->
+<!-- tab -->
+this is tab3
+<!-- endtab -->
+{% endtabs %}
+
 ## 音乐
-{% aplayer "SomethingJustLikeThis" "The Chainsmokers/Coldplay" "http://qh04sczlg.hd-bkt.clouddn.com/SomethingJustLikeThis.mp3" "SomethingJustLikeThis.jpg" "lrc:SomethingJustLikeThis.txt" %}
+{% aplayer "SomethingJustLikeThis" "The Chainsmokers/Coldplay" "http://file.panjiangtao.cn/SomethingJustLikeThis.mp3" "SomethingJustLikeThis.jpg" "lrc:SomethingJustLikeThis.txt" %}
+
+## b站外链
+https://xbeibeix.com/api/bilibili/biliplayer/?url=
 
 ## 按钮
 <center>{% btn #, 按一下, home fa-fw fa-lg, Title %}</center>
@@ -19,7 +35,7 @@ default,primary,success,info,warning,danger
 {% endnote %}
 
 ## pdf
-<iframe src="http://qh04sczlg.hd-bkt.clouddn.com/jianli.pdf" width="100%" height="800px"></iframe>
+<iframe src="http://file.panjiangtao.cn/jianli.pdf" width="100%" height="800px"></iframe>
 
 
 ## iframe插件
@@ -28,7 +44,7 @@ default,primary,success,info,warning,danger
 ```
 <iframe 
 	height=500 width=100% 
-	src="http://qh04sczlg.hd-bkt.clouddn.com/gouge.mp4" 
+	src="http://file.panjiangtao.cn/gouge.mp4" 
 	frameborder=0 allowfullscreen>
 </iframe>
 
