@@ -9,7 +9,7 @@ categories:
 ---
 {% cq %}
 <!-- ### <script type="text/javascript" src="https://api.uixsj.cn/hitokoto/w.php?code=js"></script><div id="xsjhitokoto"><script>xsjhitokoto()</script></div> -->
-### <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script><span id="jinrishici-sentence">正在加载今日诗词....</span>
+# <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script><span id="jinrishici-sentence">正在加载今日诗词....</span>
 {% endcq %}
 <iframe scrolling="no" src="https://tianqiapi.com/api.php?style=tz&skin=gif" frameborder="0" width="100%" height="30" allowtransparency="true"></iframe>
 <!-- more -->

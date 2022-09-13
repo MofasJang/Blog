@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon2.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon1.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="MSQCiKXQdzgMaU1c">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.1/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.panjiangtao.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="参考文章：Train deep learning model AWS EC2 containers            简介 AWS Deep Learning Containers (DL Containers)是预先安装了深度学习框架的 Docker 镜像，可以跳过从头构建和优化环境的复杂流程，轻松快速部署自定义机器学习环境。 利用AWS DL Containers">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用AWS Deep Learning Containers在Amazon EC2上训练深度学习模型">
+<meta property="og:url" content="http://www.panjiangtao.cn/posts/aws-4deepl/index.html">
+<meta property="og:site_name" content="PJT&#39;s Blog">
+<meta property="og:description" content="参考文章：Train deep learning model AWS EC2 containers            简介 AWS Deep Learning Containers (DL Containers)是预先安装了深度学习框架的 Docker 镜像，可以跳过从头构建和优化环境的复杂流程，轻松快速部署自定义机器学习环境。 利用AWS DL Containers">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/1a.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/1b.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/1c.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/1d.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/1e.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/1f.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/2a.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/2b.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/2c.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/2d.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/2e.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/2f.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/2g.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/3a.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/3b.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/4a.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/4b.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/5a.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/5b.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/5c.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/6a.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/6b.png">
+<meta property="og:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/6c.png">
+<meta property="article:published_time" content="2021-02-09T08:03:57.000Z">
+<meta property="article:modified_time" content="2021-02-10T06:38:30.469Z">
+<meta property="article:author" content="大膜法师江">
+<meta property="article:tag" content="云服务">
+<meta property="article:tag" content="AWS">
+<meta property="article:tag" content="亚马逊">
+<meta property="article:tag" content="深度学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.panjiangtao.cn/posts/aws-4deepl/1a.png">
+
+<link rel="canonical" href="http://www.panjiangtao.cn/posts/aws-4deepl/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>使用AWS Deep Learning Containers在Amazon EC2上训练深度学习模型 | PJT's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="PJT's Blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="nexmoe-bg" style="background-image: url(https://api.uixsj.cn/bing/bing.php)"></div>
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a target="_blank" rel="noopener" href="https://github.com/MofasJang" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">PJT's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">同志们好</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">34</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">38</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">73</span></a>
+
+  </li>
+        <li class="menu-item menu-item-photos">
+
+    <a href="/photos/" rel="section"><i class="fa fa-image fa-fw"></i>Photos</a>
+
+  </li>
+        <li class="menu-item menu-item-pjt的神奇歌单">
+
+    <a href="/PJT%E7%9A%84%E7%A5%9E%E5%A5%87%E6%AD%8C%E5%8D%95/" rel="section"><i class="fa fa-music fa-fw"></i>PJT的神奇歌单</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+</div>
+      
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.panjiangtao.cn/posts/aws-4deepl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="大膜法师江">
+      <meta itemprop="description" content="这是一个神奇的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PJT's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用AWS Deep Learning Containers在Amazon EC2上训练深度学习模型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-09 16:03:57" itemprop="dateCreated datePublished" datetime="2021-02-09T16:03:57+08:00">2021-02-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-10 14:38:30" itemprop="dateModified" datetime="2021-02-10T14:38:30+08:00">2021-02-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%91%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">云服务</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%91%E6%9C%8D%E5%8A%A1/AWS/" itemprop="url" rel="index"><span itemprop="name">AWS</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/posts/aws-4deepl/" class="post-meta-item leancloud_visitors" data-flag-title="使用AWS Deep Learning Containers在Amazon EC2上训练深度学习模型" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/aws-4deepl/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/aws-4deepl/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="note info">
+            <p>参考文章：<a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/getting-started/hands-on/train-deep-learning-model-aws-ec2-containers/">Train deep learning model AWS EC2 containers</a></p>
+          </div>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><ul>
+<li>AWS Deep Learning Containers (DL Containers)是预先安装了深度学习框架的 Docker 镜像，可以跳过从头构建和优化环境的复杂流程，轻松快速部署自定义机器学习环境。</li>
+<li>利用AWS DL Containers，开发人员和数据科学家可以为其部署在 Amazon Elastic Container Service for Kubernetes (Amazon EKS)、自行管理的Kubernetes、Amazon Elastic Container Service (Amazon ECS) 和 Amazon EC2 上的容器化应用程序添加机器学习功能。</li>
+<li>本文中我们将使用 AWS Deep Learning Containers 在 Amazon EC2 实例上训练一个 TensorFlow 机器学习模型。由于还未学习TensorFlow 机器学习模型的建立和使用，故文中使用AWS官方给出的样例。<a id="more"></a>
+</li>
+</ul>
+<h1 id="一、添加访问Amazon-ECR的权限"><a href="#一、添加访问Amazon-ECR的权限" class="headerlink" title="一、添加访问Amazon ECR的权限"></a>一、添加访问Amazon ECR的权限</h1><h2 id="1-导航到-IAM-控制台"><a href="#1-导航到-IAM-控制台" class="headerlink" title="1. 导航到 IAM 控制台"></a>1. 导航到 IAM 控制台</h2><p>打开 AWS 管理控制台，以便使本分步指南处于打开状态。此屏幕加载后，请输入用户名和密码以便开始操作。在搜索栏中输入 IAM，然后选择 <strong>IAM</strong> 以便打开服务控制台。<br><img src="/posts/aws-4deepl/1a.png" alt="导航到 IAM 控制台"></p>
+<h2 id="2-选择用户"><a href="#2-选择用户" class="headerlink" title="2. 选择用户"></a>2. 选择用户</h2><p>在左侧导航窗格中，选择<strong>用户</strong>。<br><img src="/posts/aws-4deepl/1b.png" alt="选择用户"></p>
+<h2 id="3-添加权限"><a href="#3-添加权限" class="headerlink" title="3. 添加权限"></a>3. 添加权限</h2><p>现在，为所创建的新 IAM 用户或现有 IAM 用户添加权限。在 IAM 用户摘要页面上选择<strong>添加权限</strong>。<br><img src="/posts/aws-4deepl/1c.png" alt="添加权限"></p>
+<h2 id="4-添加-ECS-完全访问策略"><a href="#4-添加-ECS-完全访问策略" class="headerlink" title="4. 添加 ECS 完全访问策略"></a>4. 添加 ECS 完全访问策略</h2><p>选择<strong>直接附加现有策略</strong>，搜索 ECS_FullAccess。选择 <strong>Amazon_FullAccess</strong> 策略，依次单击<strong>查看</strong>和<strong>添加权限</strong>。<br><img src="/posts/aws-4deepl/1d.png" alt="添加 ECS 完全访问策略"></p>
+<h2 id="5-添加内联策略"><a href="#5-添加内联策略" class="headerlink" title="5. 添加内联策略"></a>5. 添加内联策略</h2><p>在 IAM 用户摘要页面上选择<strong>添加内联策略</strong>。<br><img src="/posts/aws-4deepl/1e.png" alt="添加内联策略"></p>
+<h2 id="6-粘贴-JSON-策略"><a href="#6-粘贴-JSON-策略" class="headerlink" title="6. 粘贴 JSON 策略"></a>6. 粘贴 JSON 策略</h2><p>选择 <strong>JSON</strong> 选项卡并粘贴以下策略：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">       <span class="attr">&quot;Version&quot;</span>: <span class="string">&quot;2012-10-17&quot;</span>,</span><br><span class="line">       <span class="attr">&quot;Statement&quot;</span>: [</span><br><span class="line">              &#123;</span><br><span class="line">                     <span class="attr">&quot;Action&quot;</span>: <span class="string">&quot;ecr:*&quot;</span>,</span><br><span class="line">                     <span class="attr">&quot;Effect&quot;</span>: <span class="string">&quot;Allow&quot;</span>,</span><br><span class="line">                     <span class="attr">&quot;Resource&quot;</span>: <span class="string">&quot;*&quot;</span></span><br><span class="line">              &#125;</span><br><span class="line">       ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>将此策略另存为 “ECR”，然后选择<strong>创建策略</strong>。<br><img src="/posts/aws-4deepl/1f.png" alt="粘贴 JSON 策略"></p>
+<h1 id="二、启动一个-AWS-Deep-Learning-Base-AMI-实例"><a href="#二、启动一个-AWS-Deep-Learning-Base-AMI-实例" class="headerlink" title="二、启动一个 AWS Deep Learning Base AMI 实例"></a>二、启动一个 AWS Deep Learning Base AMI 实例</h1><p>在本文中，我们将在 AWS Deep Learning Base Amazon Machine Images (AMIs) 上使用 AWS Deep Learning Containers，这些容器预先打包了必要的依赖项，例如 Nvidia 驱动程序、docker 和 nvidia-docker。可以使用这些软件包在任何 AMI 上运行 Deep Learning Containers。</p>
+<h2 id="1-导航到EC2控制台"><a href="#1-导航到EC2控制台" class="headerlink" title="1. 导航到EC2控制台"></a>1. 导航到EC2控制台</h2><p>返回到 AWS 管理控制台，在搜索栏中输入 EC2，并选择 <strong>EC2</strong>以打开服务控制台。<br><img src="/posts/aws-4deepl/2a.png" alt="导航到EC2控制台"></p>
+<h2 id="2-启动一个-Amazon-EC2-实例"><a href="#2-启动一个-Amazon-EC2-实例" class="headerlink" title="2. 启动一个 Amazon EC2 实例"></a>2. 启动一个 Amazon EC2 实例</h2><p>再次导航到 Amazon EC2 控制台，然后选择 <strong>Launch Instance</strong>（启动实例）按钮。<br><img src="/posts/aws-4deepl/2b.png" alt="启动一个 Amazon EC2 实例"></p>
+<h2 id="3-选择-AWS-Deep-Learning-Base-AMI"><a href="#3-选择-AWS-Deep-Learning-Base-AMI" class="headerlink" title="3. 选择 AWS Deep Learning Base AMI"></a>3. 选择 AWS Deep Learning Base AMI</h2><p>选择左侧的 <strong>AWS Marketplace</strong> 选项卡，然后搜索“deep learning base ubuntu”。选择 <strong>Deep Learning Base AMI (Ubuntu)</strong>。还可以选择 <strong>Deep Learning Base AMI (Amazon Linux)</strong>。<br><img src="/posts/aws-4deepl/2c.png" alt="选择 AWS Deep Learning Base AMI"></p>
+<h2 id="4-选择实例类型"><a href="#4-选择实例类型" class="headerlink" title="4. 选择实例类型"></a>4. 选择实例类型</h2><p>选择 Amazon EC2 实例类型。Amazon Elastic Compute Cloud (EC2) 是用于在云中创建和运行虚拟机的 Amazon Web 服务。AWS 将这些虚拟机称为“实例”。可以选择c5.large或基于GPU 的 P3 实例。</p>
+<p>选择<strong>检查和启动</strong>。<br><img src="/posts/aws-4deepl/2d.png" alt="选择实例类型"></p>
+<h2 id="5-启动实例"><a href="#5-启动实例" class="headerlink" title="5. 启动实例"></a>5. 启动实例</h2><p>查看实例的详细信息，然后选择<strong>启动</strong>。<br><img src="/posts/aws-4deepl/2e.png" alt="启动实例"></p>
+<h2 id="6-创建一个新的私钥文件"><a href="#6-创建一个新的私钥文件" class="headerlink" title="6. 创建一个新的私钥文件"></a>6. 创建一个新的私钥文件</h2><ul>
+<li><p>在下一个屏幕中，系统会要求选择现有密钥对或创建新的密钥对。可以使用密钥对通过 SSH 安全访问实例。AWS 会存储密钥对的公有部分，该部分密钥的作用就像门锁。需下载并使用密钥对的私有部分，该部分密钥的作用就像门锁钥匙。</p>
+</li>
+<li><p>选择<strong>创建新密钥对</strong>，并为其命名。然后选择<strong>下载密钥对</strong>，并将密钥存储在安全的位置。如果丢失密钥，就无法访问该实例。如果他人获得密钥，他们就能够访问该实例。</p>
+</li>
+<li><p>如果以前创建了私钥文件，并且现在仍可访问，则可以选择选择<strong>现有的密钥对</strong>，使用现有私钥。</p>
+</li>
+</ul>
+<p><img src="/posts/aws-4deepl/2f.png" alt="创建一个新的私钥文件"></p>
+<h2 id="7-查看实例详情"><a href="#7-查看实例详情" class="headerlink" title="7. 查看实例详情"></a>7. 查看实例详情</h2><p>选择<strong>实例ID</strong>，在控制台上查看新创建的 Amazon EC2 的详细信息。<br><img src="/posts/aws-4deepl/2g.png" alt="查看实例详情"></p>
+<h1 id="三、连接到实例"><a href="#三、连接到实例" class="headerlink" title="三、连接到实例"></a>三、连接到实例</h1><p>在此步骤中，将使用 SSH 连接到新启动的实例。以下说明使用 Mac/Linux 环境。如果使用的是 Windows，请按照<a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/getting-started/hands-on/launch-a-virtual-machine/">教程</a>完成。</p>
+<h2 id="1-找到实例的公共-DNS-并复制"><a href="#1-找到实例的公共-DNS-并复制" class="headerlink" title="1. 找到实例的公共 DNS 并复制"></a>1. 找到实例的公共 DNS 并复制</h2><p>在<strong>说明</strong>选项卡下，复制 Amazon EC2 实例的公共 DNS (IPv4)。<br><img src="/posts/aws-4deepl/3a.png" alt="找到实例的公共 DNS 并复制"></p>
+<h2 id="2-打开命令行终端"><a href="#2-打开命令行终端" class="headerlink" title="2. 打开命令行终端"></a>2. 打开命令行终端</h2><p>在终端中使用以下命令更改为安全密钥所在的目录，然后使用 SSH 连接实例。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd /Users/<span class="xml"><span class="tag">&lt;<span class="name">your_username</span>&gt;</span>/Downloads/</span></span><br><span class="line"></span><br><span class="line">chmod 0400 &lt;your .pem filename&gt;</span><br><span class="line"></span><br><span class="line">ssh -L localhost:8888:localhost:8888 -i &lt;your .pem filename&gt; ubuntu@&lt;your instance DNS&gt;</span><br></pre></td></tr></table></figure><br><img src="/posts/aws-4deepl/3b.png" alt="打开命令行终端"></p>
+<h1 id="四、登录到-Amazon-ECR"><a href="#四、登录到-Amazon-ECR" class="headerlink" title="四、登录到 Amazon ECR"></a>四、登录到 Amazon ECR</h1><p>AWS Deep Learning Container 映像托管在 Amazon Elastic Container Registry (ECR) 上，这是一个完全托管的 Docker 容器注册表，让开发人员可以轻松存储、管理和部署 Docker 容器映像。在此步骤中，将登录并验证能否正常访问 Amazon ECR。</p>
+<h2 id="1-使用-AWS-凭证配置-EC2-实例"><a href="#1-使用-AWS-凭证配置-EC2-实例" class="headerlink" title="1. 使用 AWS 凭证配置 EC2 实例"></a>1. 使用 AWS 凭证配置 EC2 实例</h2><p>需要提供AWS 访问密钥 ID 和秘密访问密钥。如果还没有这些信息，则可以在<a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey">此处</a>创建访问密钥 ID 和秘密访问密钥。<br><img src="/posts/aws-4deepl/4a.png" alt="使用 AWS 凭证配置 EC2 实例"></p>
+<h2 id="2-登录到-Amazon-ECR"><a href="#2-登录到-Amazon-ECR" class="headerlink" title="2. 登录到 Amazon ECR"></a>2. 登录到 Amazon ECR</h2><p>使用以下命令登录到 Amazon ECR：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(aws ecr get-login --region us-east<span class="number">-1</span> --no-include-email --registry-ids <span class="number">763104351884</span>)</span><br></pre></td></tr></table></figure><br><strong>注意</strong>：需要在命令中包含“$”和圆括号。完成此步骤后，将看到“登录成功”。<br><img src="/posts/aws-4deepl/4b.png" alt="登录到 Amazon ECR"></p>
+<h1 id="五、使用-Deep-Learning-Containers-运行-TensorFlow-训练"><a href="#五、使用-Deep-Learning-Containers-运行-TensorFlow-训练" class="headerlink" title="五、使用 Deep Learning Containers 运行 TensorFlow 训练"></a>五、使用 Deep Learning Containers 运行 TensorFlow 训练</h1><p>在此步骤中，我们将使用 AWS Deep Learning Container 映像，通过 Python 3.6 在 CPU 实例上进行 TensorFlow 训练。</p>
+<h2 id="1-运行-AWS-Deep-Learning-Containers"><a href="#1-运行-AWS-Deep-Learning-Containers" class="headerlink" title="1.运行 AWS Deep Learning Containers"></a>1.运行 AWS Deep Learning Containers</h2><p>现在，使用以下命令在 EC2 实例上运行 AWS Deep Learning Container 映像。如果 Deep Learning Container 映像在本地不存在，则此命令将自动提取该映像。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it <span class="number">763104351884.</span>dkr.ecr.us-east<span class="number">-1.</span>amazonaws.com/tensorflow-training:<span class="number">1.13</span>-cpu-py36-ubuntu16<span class="number">.04</span></span><br></pre></td></tr></table></figure><br><strong>注意</strong>：此步骤可能需要几分钟，具体取决于映像的大小。如果使用的是 GPU 实例，请使用“nvidia-docker”而非“docker”。 成功完成此步骤后，将为容器进入一个 bash 提示符界面。<br><img src="/posts/aws-4deepl/5a.png" alt="运行 AWS Deep Learning Containers"></p>
+<h2 id="2-拉取一个示例模型进行训练"><a href="#2-拉取一个示例模型进行训练" class="headerlink" title="2.拉取一个示例模型进行训练"></a>2.拉取一个示例模型进行训练</h2><p>我们将克隆 Keras 存储库，其中包括用于训练模型的示例 Python 脚本。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="comment">//github.com/fchollet/keras.git</span></span><br></pre></td></tr></table></figure><br><img src="/posts/aws-4deepl/5b.png" alt="拉取一个示例模型进行训练"></p>
+<h2 id="3-开始训练"><a href="#3-开始训练" class="headerlink" title="3. 开始训练"></a>3. 开始训练</h2><p>使用以下命令开始训练规范的 MNIST CNN 模型：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python keras/examples/mnist_cnn.py</span><br></pre></td></tr></table></figure><br>已经成功使用 AWS Deep Learning Container 开始了训练。<br><img src="/posts/aws-4deepl/5c.png" alt="开始训练"></p>
+<h1 id="六、终止资源"><a href="#六、终止资源" class="headerlink" title="六、终止资源"></a>六、终止资源</h1><p>在此步骤中，将终止在本教程中创建的 Amazon EC2 实例。</p>
+<p><strong>注意</strong>：终止当前未在使用的资源可降低成本，这是最佳实践。不终止资源可能会在账户下产生费用。</p>
+<h2 id="1-选择正在运行的实例"><a href="#1-选择正在运行的实例" class="headerlink" title="1.选择正在运行的实例"></a>1.选择正在运行的实例</h2><p>在 Amazon EC2 控制台上，选择<strong>正在运行的实例</strong>。<br><img src="/posts/aws-4deepl/6a.png" alt="选择正在运行的实例"></p>
+<h2 id="2-终止EC2实例"><a href="#2-终止EC2实例" class="headerlink" title="2.终止EC2实例"></a>2.终止EC2实例</h2><p>选择之前创建的 EC2 实例，再选择<strong>操作 &gt; 实例状态 &gt; 终止</strong>。<br><img src="/posts/aws-4deepl/6b.png" alt="终止EC2实例"></p>
+<h2 id="3-确认终止"><a href="#3-确认终止" class="headerlink" title="3. 确认终止"></a>3. 确认终止</h2><p>系统会提示确认终止。选择<strong>是，终止</strong>。</p>
+<p><strong>注意</strong>：完成此过程可能需要几秒钟。终止实例后，EC2 控制台上的“实例状态”会变为“已终止”。<br><img src="/posts/aws-4deepl/6c.png" alt="确认终止"></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>支持作者</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="大膜法师江 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="大膜法师江 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <h3>相关文章：</h3><ul class="related-posts"><li><a href="/posts/aws-3manager/">使用AWS Systems Manager在EC2实例上远程运行命令</a></li><li><a href="/posts/aws-2staticweb/">在AWS上托管简单静态页面</a></li><li><a href="/posts/aws-1register/">AWS服务的注册和创建主机</a></li><li><a href="/posts/dl-13speech-recognition/">序列模型之语言辨识</a></li><li><a href="/posts/dl-12GRU-and-LSTM/">GRU单元和LSTM</a></li><li><a href="/posts/dl-11Language-model-and-Sample/">语音模型训练和序列生成</a></li><li><a href="/posts/dl-10different-rnn/">不同类型循环神经网络</a></li><li><a href="/posts/dl-9Sequence-Models-introduce/">深度学习——序列模型介绍</a></li><li><a href="/posts/dl-8Gradient-descent-for-neural/">神经网络中的梯度下降</a></li><li><a href="/posts/dl-7activation-functions/">神经网络的激活函数</a></li></ul>
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>大膜法师江
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://www.panjiangtao.cn/posts/aws-4deepl/" title="使用AWS Deep Learning Containers在Amazon EC2上训练深度学习模型">http://www.panjiangtao.cn/posts/aws-4deepl/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1/" rel="tag"><i class="fa fa-tag"></i> 云服务</a>
+              <a href="/tags/AWS/" rel="tag"><i class="fa fa-tag"></i> AWS</a>
+              <a href="/tags/%E4%BA%9A%E9%A9%AC%E9%80%8A/" rel="tag"><i class="fa fa-tag"></i> 亚马逊</a>
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"><i class="fa fa-tag"></i> 深度学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/aws-3manager/" rel="prev" title="使用AWS Systems Manager在EC2实例上远程运行命令">
+      <i class="fa fa-chevron-left"></i> 使用AWS Systems Manager在EC2实例上远程运行命令
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/dl-1definition/" rel="next" title="机器学习引言">
+      机器学习引言 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%B7%BB%E5%8A%A0%E8%AE%BF%E9%97%AEAmazon-ECR%E7%9A%84%E6%9D%83%E9%99%90"><span class="nav-number">2.</span> <span class="nav-text">一、添加访问Amazon ECR的权限</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AF%BC%E8%88%AA%E5%88%B0-IAM-%E6%8E%A7%E5%88%B6%E5%8F%B0"><span class="nav-number">2.1.</span> <span class="nav-text">1. 导航到 IAM 控制台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%80%89%E6%8B%A9%E7%94%A8%E6%88%B7"><span class="nav-number">2.2.</span> <span class="nav-text">2. 选择用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%B7%BB%E5%8A%A0%E6%9D%83%E9%99%90"><span class="nav-number">2.3.</span> <span class="nav-text">3. 添加权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%B7%BB%E5%8A%A0-ECS-%E5%AE%8C%E5%85%A8%E8%AE%BF%E9%97%AE%E7%AD%96%E7%95%A5"><span class="nav-number">2.4.</span> <span class="nav-text">4. 添加 ECS 完全访问策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%B7%BB%E5%8A%A0%E5%86%85%E8%81%94%E7%AD%96%E7%95%A5"><span class="nav-number">2.5.</span> <span class="nav-text">5. 添加内联策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E7%B2%98%E8%B4%B4-JSON-%E7%AD%96%E7%95%A5"><span class="nav-number">2.6.</span> <span class="nav-text">6. 粘贴 JSON 策略</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AA-AWS-Deep-Learning-Base-AMI-%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">二、启动一个 AWS Deep Learning Base AMI 实例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AF%BC%E8%88%AA%E5%88%B0EC2%E6%8E%A7%E5%88%B6%E5%8F%B0"><span class="nav-number">3.1.</span> <span class="nav-text">1. 导航到EC2控制台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AA-Amazon-EC2-%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.2.</span> <span class="nav-text">2. 启动一个 Amazon EC2 实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E9%80%89%E6%8B%A9-AWS-Deep-Learning-Base-AMI"><span class="nav-number">3.3.</span> <span class="nav-text">3. 选择 AWS Deep Learning Base AMI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E9%80%89%E6%8B%A9%E5%AE%9E%E4%BE%8B%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.4.</span> <span class="nav-text">4. 选择实例类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%90%AF%E5%8A%A8%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.5.</span> <span class="nav-text">5. 启动实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84%E7%A7%81%E9%92%A5%E6%96%87%E4%BB%B6"><span class="nav-number">3.6.</span> <span class="nav-text">6. 创建一个新的私钥文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E6%9F%A5%E7%9C%8B%E5%AE%9E%E4%BE%8B%E8%AF%A6%E6%83%85"><span class="nav-number">3.7.</span> <span class="nav-text">7. 查看实例详情</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E8%BF%9E%E6%8E%A5%E5%88%B0%E5%AE%9E%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">三、连接到实例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%89%BE%E5%88%B0%E5%AE%9E%E4%BE%8B%E7%9A%84%E5%85%AC%E5%85%B1-DNS-%E5%B9%B6%E5%A4%8D%E5%88%B6"><span class="nav-number">4.1.</span> <span class="nav-text">1. 找到实例的公共 DNS 并复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%89%93%E5%BC%80%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%BB%88%E7%AB%AF"><span class="nav-number">4.2.</span> <span class="nav-text">2. 打开命令行终端</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%99%BB%E5%BD%95%E5%88%B0-Amazon-ECR"><span class="nav-number">5.</span> <span class="nav-text">四、登录到 Amazon ECR</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BD%BF%E7%94%A8-AWS-%E5%87%AD%E8%AF%81%E9%85%8D%E7%BD%AE-EC2-%E5%AE%9E%E4%BE%8B"><span class="nav-number">5.1.</span> <span class="nav-text">1. 使用 AWS 凭证配置 EC2 实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%99%BB%E5%BD%95%E5%88%B0-Amazon-ECR"><span class="nav-number">5.2.</span> <span class="nav-text">2. 登录到 Amazon ECR</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E4%BD%BF%E7%94%A8-Deep-Learning-Containers-%E8%BF%90%E8%A1%8C-TensorFlow-%E8%AE%AD%E7%BB%83"><span class="nav-number">6.</span> <span class="nav-text">五、使用 Deep Learning Containers 运行 TensorFlow 训练</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%BF%90%E8%A1%8C-AWS-Deep-Learning-Containers"><span class="nav-number">6.1.</span> <span class="nav-text">1.运行 AWS Deep Learning Containers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%8B%89%E5%8F%96%E4%B8%80%E4%B8%AA%E7%A4%BA%E4%BE%8B%E6%A8%A1%E5%9E%8B%E8%BF%9B%E8%A1%8C%E8%AE%AD%E7%BB%83"><span class="nav-number">6.2.</span> <span class="nav-text">2.拉取一个示例模型进行训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%BC%80%E5%A7%8B%E8%AE%AD%E7%BB%83"><span class="nav-number">6.3.</span> <span class="nav-text">3. 开始训练</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E7%BB%88%E6%AD%A2%E8%B5%84%E6%BA%90"><span class="nav-number">7.</span> <span class="nav-text">六、终止资源</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%80%89%E6%8B%A9%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%9E%E4%BE%8B"><span class="nav-number">7.1.</span> <span class="nav-text">1.选择正在运行的实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%BB%88%E6%AD%A2EC2%E5%AE%9E%E4%BE%8B"><span class="nav-number">7.2.</span> <span class="nav-text">2.终止EC2实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E7%A1%AE%E8%AE%A4%E7%BB%88%E6%AD%A2"><span class="nav-number">7.3.</span> <span class="nav-text">3. 确认终止</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="大膜法师江"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">大膜法师江</p>
+  <div class="site-description" itemprop="description">这是一个神奇的博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/MofasJang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MofasJang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:pjt@panjiangtao.cn" title="E-Mail → mailto:pjt@panjiangtao.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/6159239392" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;6159239392" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/14000187?from=search&seid=3221480724752802587" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;14000187?from&#x3D;search&amp;seid&#x3D;3221480724752802587" rel="noopener" target="_blank"><i class="fa fa-bold fa-fw"></i>Bilibili</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian">
+      <img src="/images/beian.png" style="display: inline-block;"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2020038525号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">by MofasJang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">141k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='' opacity='' zIndex='' count='' src="/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.1/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'IWz0PJzseROCo1vGzW4Su51p-gzGzoHsz',
+      appKey     : '7luWBqqE58PkIA8LbphzS2Fo',
+      placeholder: "请输入（支持md格式）",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+</body>
+</html>

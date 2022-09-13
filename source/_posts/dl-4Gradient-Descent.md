@@ -70,3 +70,29 @@ categories:
 
 　　$b=b-\alpha db$。
 
+# 逻辑回归中的梯度下降(m个样本)
+　　我们所需要做的就是将单个样本的梯度下降过程进行m次并求出平均值。
+![一轮梯度下降计算](8b725e51dcffc53a5def49438b70d925.png)
+　　我们初始化$J=0,d{w_{1}}=0,d{w_{2}}=0,db=0$
+
+　　代码流程：
+
+```py
+J=0,dw1=0,dw2=0,db=0
+for i = 1 to m:
+    z(i) = wx(i)+b
+    a(i) = sigmoid(z(i))
+    J += -[y(i)log(a(i))+(1-y(i)）log(1-a(i))
+    dz(i) = a(i)-y(i)
+    dw1 += x1(i)dz(i)
+    dw2 += x2(i)dz(i)
+    db += dz(i)
+J/= m
+dw1/= m
+dw2/= m
+db/= m
+w=w-alpha*dw
+b=b-alpha*db
+```
+
+　　然而，随着n的增大，dw的求取也需要一重循环，导致程序效率低下，故考虑向量化来摆脱循环。

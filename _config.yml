@@ -54,6 +54,10 @@ code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
   - "photos/**"
+  - "fastspeech2/**"
+  - "SV2TTS/**"
+  - "melgan/**"
+  - "vits/**"
 
 symbols_count_time:
   # 文章上部是否显示字数
@@ -149,3 +153,12 @@ deploy:
 #   repo: https://github.com/MofasJang/MofasJang.github.io
 #   branch: master 
 - type: baidu_url_submitter
+
+aplayer:
+  meting: true
+
+feed:
+  type: rss2
+  path: rss2.xml
+  limit: false
+  hub:

@@ -11,3 +11,8 @@ type: "about"
 #### ————李大钊
 {% endcq %}
 ![党旗](http://file.panjiangtao.cn/dangqi.jpg)
+
+---
+<video src="http://file.panjiangtao.cn/tongyi.mp4" type="video/mp4"  poster="http://file.panjiangtao.cn/tongyi.jpg" controls="controls">
+    <p>你的浏览器不支持video标签.</p>
+</video>
