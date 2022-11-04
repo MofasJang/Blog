@@ -1,4 +1,5 @@
-source/
-themes/
-_config.yml
-*.json
+public/
+.deploy_git/
+.vscode/
+node_modules/
+scaffolds/
