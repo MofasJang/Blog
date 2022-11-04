@@ -1,0 +1,54 @@
+{
+    "header": [
+        " *   ",
+        " *   文件描述：本文件为请求参数，包括不限于网址、请求头、响应头、COOKIE、Referer、UserAgent",
+        " *   本文件仅为记录详细请求参数便于调试，非专业人员可将本文件删除",
+        " *   详细介绍请参考: https://bazhan.me/faq",
+        " *   "
+    ],
+    "directory": "xsdggw-cn-vhhnaf4g",
+    "options": {
+        "url": "http://xsdggw.cn/t/webpage/3dxk/",
+        "index": "index.html",
+        "domain": "xsdggw.cn",
+        "origin": "http://xsdggw.cn",
+        "ipaddress": "118.89.173.41",
+        "originURL": "http://xsdggw.cn/t/webpage/3dxk/",
+        "filenameGenerator": "byType",
+        "request": {
+            "headers": {
+                "accept": "text/html,*/*",
+                "accept-language": "zh-CN,zh;q=0.9",
+                "accept-encoding": "gzip",
+                "cache-control": "no-cache",
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+                "x-scraper-website": "https://bazhan.me/"
+            }
+        },
+        "response": {
+            "statusCode": 200,
+            "headers": {
+                "server": "nginx",
+                "date": "Sat, 03 Jul 2021 07:43:01 GMT",
+                "content-type": "text/html",
+                "last-modified": "Fri, 19 Mar 2021 09:01:08 GMT",
+                "transfer-encoding": "chunked",
+                "connection": "close",
+                "vary": "Accept-Encoding",
+                "etag": "W/\"60546854-29af\"",
+                "content-encoding": "gzip"
+            }
+        }
+    },
+    "user": {
+        "isWhite": false
+    },
+    "formatter": [
+        "saveOriginal"
+    ],
+    "time": {
+        "start": 1625298181196,
+        "end": 1625298181845,
+        "spend": 0.649
+    }
+}
