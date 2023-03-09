@@ -12,27 +12,42 @@
 		var photos=data["photo"]
 		for(var i=0;i<photos.length;i++){
 			a='<div class="title">'+photos[i]["title"]+'</div><div class="gallery">';
-			for(var j=0;j<photos[i].items.length;j++){
-				if(j%3==0){
+			var n=photos[i].items.length
+				for(var j=0;j<n;j++){
+				if(j%(n/4)==0){
 					a+='<div class="gallery__column">';
 				}
 				a+='<a class="gallery__link"><figure class="gallery__thumb"><img src=';
 				a+=photos[i]["items"][j]["src"]+photos[i]["endof"];
-				a+=' alt="Powered by PJT" class="gallery__image"><figcaption class="gallery__caption">';
+				a+=' alt="Powered by PJT" class="gallery__image" onclick="big(this)"><figcaption class="gallery__caption">';
 				a+=photos[i]["items"][j]["sub"];
 				a+='</figcaption></figure></a>';
-				if(j%3==2){
+				if(j%(n/4)==(n/4-1)){
 					a+='</div>';
 				}
 			}
 			$(".photowall").append(a);
 		}
 	})
+	function big(e){
+		$(".cphotowall").css("display","block");
+		$(".cphoto").attr("src",($(e).attr("src")).split("?")[0]);	
+		setTimeout(function(){$(".cphotowall").css("opacity","1")},5);
+		$(".nexmoe-bg").css({"z-index":1,"opacity":0.8})
+		
+	}
+	function closec(){
+		$(".cphotowall").css("opacity","0");
+		setTimeout(function(){$(".cphotowall").css({"display":"none"})},300);
+		$(".nexmoe-bg").css({"z-index":-1,"opacity":1})
+	}
 	
 </script>
 <body>
 <div class="nexmoe-bg" style="background-image: url(http://file.panjiangtao.cn/bg4.jpg)"></div>
-
+<div class="cphotowall" onclick="closec()">
+	<img class="cphoto">
+</div>
 <div class="photowall"></div>
 <!-- partial -->
   

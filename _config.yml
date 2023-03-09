@@ -58,6 +58,7 @@ skip_render:
   - "SV2TTS/**"
   - "melgan/**"
   - "vits/**"
+  - "wjwjiloveu/**"
 
 symbols_count_time:
   # 文章上部是否显示字数

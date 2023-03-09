@@ -30,6 +30,7 @@ body {
   top: 0;
   left: 0;
   z-index: -1;
+  transition: .3s;
 }
 .title {
   font-size: calc(100vw*100/1920);
@@ -109,4 +110,30 @@ body {
   opacity: 0;
   /* background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, rgba(255, 255, 255, 0) 100%); */
   transition: .3s;
+}
+.cphotowall {
+  display: none;
+  opacity: 0;
+  width: 90%;
+  height: 90%;
+  position:fixed;
+  top:5%; 
+  left:5%;
+  z-index: 101;
+  transition: .5s;
+}
+.cphoto {
+  display: block;
+  margin: auto auto;
+  border-radius: 20px;
+  width: auto;
+  height: 100%;
+  position: relative;
+  object-fit: cover;
+}
+@media screen and (max-width:1200px) {
+  .cphoto {
+    width: 100%;
+    height: auto;
+  }
 }

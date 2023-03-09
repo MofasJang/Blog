@@ -1,8 +1,55 @@
 {
     "photo":[
         {
+            "title":"珍珠和奥利奥",
+            "endof":"?imageMogr2/auto-orient/thumbnail/!30p/blur/1x0/quality/30",
+            "items":[
+                {"src":"http://image.panjiangtao.cn/cat/1.jpg","sub":"珍珠僵直了"},
+                {"src":"http://image.panjiangtao.cn/cat/2.jpg","sub":"躺着睡"},
+                {"src":"http://image.panjiangtao.cn/cat/3.jpg","sub":"叉手手"},
+                {"src":"http://image.panjiangtao.cn/cat/4.jpg","sub":"叉腿腿"},
+                {"src":"http://image.panjiangtao.cn/cat/5.jpg","sub":"好姐妹一起睡箱子里"},
+                {"src":"http://image.panjiangtao.cn/cat/6.jpg","sub":"奥利奥黢黑"},
+                {"src":"http://image.panjiangtao.cn/cat/7.jpg","sub":"珍珠的新裙子"},
+                {"src":"http://image.panjiangtao.cn/cat/8.jpg","sub":"口气清新"},
+                {"src":"http://image.panjiangtao.cn/cat/9.jpg","sub":"小小的也很可爱"},
+                {"src":"http://image.panjiangtao.cn/cat/10.jpg","sub":"眯眼睡觉觉"},
+                {"src":"http://image.panjiangtao.cn/cat/11.jpg","sub":"奥利奥打针好疼"},
+                {"src":"http://image.panjiangtao.cn/cat/12.jpg","sub":"小珍珠找妈妈"},
+                {"src":"http://image.panjiangtao.cn/cat/13.jpg","sub":"睡死了"},
+                {"src":"http://image.panjiangtao.cn/cat/14.jpg","sub":"打个哈欠"},
+                {"src":"http://image.panjiangtao.cn/cat/15.jpg","sub":"抬头仰望神明"},
+                {"src":"http://image.panjiangtao.cn/cat/16.jpg","sub":"双排拉屎"},
+                {"src":"http://image.panjiangtao.cn/cat/17.jpg","sub":"黑猫警长"},
+                {"src":"http://image.panjiangtao.cn/cat/18.jpg","sub":"相濡以沫"},
+                {"src":"http://image.panjiangtao.cn/cat/19.jpg","sub":"珍珠的凝视"},
+                {"src":"http://image.panjiangtao.cn/cat/20.jpg","sub":"奥利奥"},
+                {"src":"http://image.panjiangtao.cn/cat/21.jpg","sub":"看不清脸了"},
+                {"src":"http://image.panjiangtao.cn/cat/22.jpg","sub":"正襟危坐"},
+                {"src":"http://image.panjiangtao.cn/cat/23.jpg","sub":"角落观望"},
+                {"src":"http://image.panjiangtao.cn/cat/24.jpg","sub":"珍珠的大包子脸"},
+                {"src":"http://image.panjiangtao.cn/cat/25.jpg","sub":"洁白如玉"},
+                {"src":"http://image.panjiangtao.cn/cat/26.jpg","sub":"小珍珠真小"},
+                {"src":"http://image.panjiangtao.cn/cat/27.jpg","sub":"把珍珠裹成粽子"},
+                {"src":"http://image.panjiangtao.cn/cat/28.jpg","sub":"珍珠一脸疑惑"},
+                {"src":"http://image.panjiangtao.cn/cat/29.jpg","sub":"你瞅啥"},
+                {"src":"http://image.panjiangtao.cn/cat/30.jpg","sub":"卖个萌"},
+                {"src":"http://image.panjiangtao.cn/cat/31.jpg","sub":"困死我了"},
+                {"src":"http://image.panjiangtao.cn/cat/32.jpg","sub":"你快给我！饿了"},
+                {"src":"http://image.panjiangtao.cn/cat/33.jpg","sub":"看电视呢"},
+                {"src":"http://image.panjiangtao.cn/cat/34.jpg","sub":"让我康康"},
+                {"src":"http://image.panjiangtao.cn/cat/35.jpg","sub":"啊啊啊啊啊啊啊！"},
+                {"src":"http://image.panjiangtao.cn/cat/36.jpg","sub":"我要生气啦"},
+                {"src":"http://image.panjiangtao.cn/cat/37.jpg","sub":"毛茸茸的小珍珠"},
+                {"src":"http://image.panjiangtao.cn/cat/38.jpg","sub":"奥利奥之wink"},
+                {"src":"http://image.panjiangtao.cn/cat/39.jpg","sub":"好耶！"},
+                {"src":"http://image.panjiangtao.cn/cat/40.jpg","sub":"黑脸珍珠"}
+            ]
+         
+        },
+        {
             "title":"致我最爱的宝贝",
-            "endof":"",
+            "endof":"?imageMogr2/auto-orient/thumbnail/!30p/blur/1x0/quality/50",
             "items":[
                 {"src":"http://image.panjiangtao.cn/baby/1.jpg","sub":"我以为"},
                 {"src":"http://image.panjiangtao.cn/baby/5.jpg","sub":"我发现"},
@@ -24,7 +71,7 @@
         },
         {
             "title":"厦门啦",
-            "endof":"",
+            "endof":"?imageMogr2/auto-orient/thumbnail/!30p/blur/1x0/quality/50",
             "items":[
                 {"src":"http://image.panjiangtao.cn/xiamen/IMG_000.jpg","sub":"沙尾坡小酒吧"},
                 {"src":"http://image.panjiangtao.cn/xiamen/IMG_006.jpg","sub":"古着店老板做的娃娃"},
@@ -46,7 +93,7 @@
         },
         {
             "title":"南京(jìng)",
-            "endof":"",
+            "endof":"?imageMogr2/auto-orient/thumbnail/!30p/blur/1x0/quality/50",
             "items":[
                 {"src":"http://image.panjiangtao.cn/nanjing/1.jpeg","sub":"烤肉肉"},
                 {"src":"http://image.panjiangtao.cn/nanjing/3.jpeg","sub":"夜晚老门东"},
@@ -68,7 +115,7 @@
         },
         {
             "title":"长沙(CSC)",
-            "endof":"",
+            "endof":"?imageMogr2/auto-orient/thumbnail/!30p/blur/1x0/quality/50",
             "items":[
                 {"src":"http://image.panjiangtao.cn/changsha/1.jpg","sub":"长沙IFC"},
                 {"src":"http://image.panjiangtao.cn/changsha/2.jpg","sub":"IFC顶楼打卡"},
@@ -90,7 +137,7 @@
         },
         {
             "title":"杭州漫展",
-            "endof":"",
+            "endof":"?imageMogr2/auto-orient/thumbnail/!30p/blur/1x0/quality/50",
             "items":[
                 {"src":"http://image.panjiangtao.cn/manzhan/1.JPG","sub":"中国国际动漫节"},
                 {"src":"http://image.panjiangtao.cn/manzhan/2.JPG","sub":"奇异博士"},
